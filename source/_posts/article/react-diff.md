@@ -2,7 +2,7 @@
 title: 实现React-Diff算法
 date: 2020-06-02 19:47:55
 summary: React 树形Diff算法
-categories: 文章
+categories: 原创
 tags: 
 - React
 - diff

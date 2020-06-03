@@ -2,7 +2,7 @@
 title: 富文本插件 TinyMCE 的菜单配置和工具栏配置
 date: 2020-06-02 19:17:48
 summary: 富文本插件 TinyMCE 的菜单配置和工具栏配置
-categories: 文章
+categories: 原创
 tags: TinyMCE
 top:
 cover:
