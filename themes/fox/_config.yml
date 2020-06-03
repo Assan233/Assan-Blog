@@ -284,7 +284,7 @@ gitalk:
 # Gitment 评论模块的配置，默认为不激活
 gitment:
   enable: true
-  owner: Assan233
+  owner: Assan
   repo: Assan-Blog
   oauth:
     clientId: 658925f1e4156794eb30
