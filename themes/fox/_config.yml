@@ -42,10 +42,10 @@ menu:
 # Website start time.
 # 站点运行开始时间.
 time:
-  enable: false
-  year: 2019 # 年份
+  enable: true
+  year: 2020 # 年份
   month: 06 # 月份
-  date: 28 # 日期
+  date: 01 # 日期
   hour: 00 # 小时
   minute: 00 # 分钟
   second: 00 # 秒
@@ -76,7 +76,7 @@ music:
   title: #非吸底模式有效
     enable: true
     show: 听听音乐
-  autoHide: false    # hide automaticaly
+  autoHide: true    # hide automaticaly
   server: netease   #require	music platform: netease, tencent, kugou, xiami, baidu
   type: playlist    #require song, playlist, album, search, artist
   id: 118299118     #require	song id / playlist id / album id / search keyword
@@ -126,7 +126,7 @@ indexbtn:
   enable: true
   name: Github
   icon: fab fa-github-alt
-  url: https://github.com/blinkfox/hexo-theme-matery
+  url: https://github.com/Assan233
 
 # The configurations of the second line of home banner
 # icon/button will not show up if you leave the corresponding socialLink empty
@@ -283,12 +283,12 @@ gitalk:
 # the Gitment config，default disabled
 # Gitment 评论模块的配置，默认为不激活
 gitment:
-  enable: false
-  owner:
+  enable: true
+  owner: Assan233
   repo:
   oauth:
-    clientId:
-    clientSecret:
+    clientId: 658925f1e4156794eb30
+    clientSecret: 7c486e39d64d534974d8056ceaf69ede5d92e549
 
 # disqus config, default disabled
 # Disqus评论模块的配置，默认为不激活
@@ -362,7 +362,7 @@ busuanziStatistics:
 # Add google analytics configuration
 # 添加 Google Analytics 配置
 googleAnalytics:
-  enable: false
+  enable: true
   id:
 
 # Add baidu analytics configuration
@@ -466,7 +466,7 @@ reprint:
 
 # DaoVoice online contact
 daovoice:
-  enable: false
+  enable: true
   app_id: 73d04dc3
 
 # Tidio online contact
@@ -516,7 +516,7 @@ subtitle:
   typeSpeed: 100 # 打字速度
   backSpeed: 50 # 删除速度
   sub1: 从来没有真正的绝境, 只有心灵的迷途
-  sub2: Never really desperate, only the lost of the soul
+  sub2: Never really desperate, only the lost of the soul.
 
 # 手机二级菜单.
 navMenu:
