@@ -284,11 +284,11 @@ gitalk:
 # Gitment 评论模块的配置，默认为不激活
 gitment:
   enable: true
-  owner: Assan
+  owner: Assan233
   repo: Assan-Blog
   oauth:
     clientId: 658925f1e4156794eb30
-    clientSecret: 3394e8d93485721c80b049b1149077f227900768
+    clientSecret: eb85a25c437b73b9a32fb1029d3671caf0169343
 
 # disqus config, default disabled
 # Disqus评论模块的配置，默认为不激活
