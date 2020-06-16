@@ -3,7 +3,7 @@ title: javascript 笔记
 date: 2020-06-02 16:37:36
 summary: javascript 笔记
 categories: 笔记
-tags: javascript
+tags: JavaScript
 top: 
 cover: 
 img:
@@ -12,29 +12,29 @@ keywords: javascript
 
 ## 1. 触发事件Dom元素获取
 ``` javascript
-ev = ev || event;
-let srcEle =  ev.currentTarget
+    ev = ev || event;
+    let srcEle =  ev.currentTarget
 ```
 
 ## 2. 深拷贝的实现
 ``` javascript
-function deepClone(obj){
-    let objClone = Array.isArray(obj)?[]:{};
-    if(obj && typeof obj==="object"){
-        for(key in obj){
-            if(obj.hasOwnProperty(key)){
-                //判断ojb子元素是否为对象，如果是，递归复制
-                if(obj[key]&&typeof obj[key] ==="object"){
-                    objClone[key] = deepClone(obj[key]);
-                }else{
-                    //如果不是，简单复制
-                    objClone[key] = obj[key];
+    function deepClone(obj){
+        let objClone = Array.isArray(obj)?[]:{};
+        if(obj && typeof obj==="object"){
+            for(key in obj){
+                if(obj.hasOwnProperty(key)){
+                    //判断ojb子元素是否为对象，如果是，递归复制
+                    if(obj[key]&&typeof obj[key] ==="object"){
+                        objClone[key] = deepClone(obj[key]);
+                    }else{
+                        //如果不是，简单复制
+                        objClone[key] = obj[key];
+                    }
                 }
             }
         }
-    }
-    return objClone;
-}   
+        return objClone;
+    }   
 ```
 ## 3. Object.assign() 实现浅拷贝
 ``` javascript
@@ -81,20 +81,20 @@ function deepClone(obj){
 
 ## 7. 闭包注意点
 ``` javascript
-function count() {
-    var arr = [];
-    for (var i=1; i<=3; i++) {
-        arr.push(function () {
-            return I * I;
-        });
+    function count() {
+        var arr = [];
+        for (var i=1; i<=3; i++) {
+            arr.push(function () {
+                return I * I;
+            });
+        }
+        return arr;
     }
-    return arr;
-}
 
-var results = count();
-var f1 = results[0];
-var f2 = results[1];
-var f3 = results[2];
+    var results = count();
+    var f1 = results[0];
+    var f2 = results[1];
+    var f3 = results[2];
 ```
 
 在上面的例子中，每次循环，都创建了一个新的函数，然后，把创建的3个函数都添加到一个Array中返回了。
@@ -111,24 +111,69 @@ f3(); // 16
 如果一定要引用循环变量怎么办？方法是再创建一个函数，用该函数的参数绑定循环变量当前的值，无论该循环变量后续如何更改，已绑定到函数参数的值不变：
 
 ``` javascript
-function count() {
-    var arr = [];
-    for (var i=1; i<=3; i++) {
-        arr.push((function (n) {
-            return function () {
-                return n * n;
-            }
-        })(i));
+    function count() {
+        var arr = [];
+        for (var i=1; i<=3; i++) {
+            arr.push((function (n) {
+                return function () {
+                    return n * n;
+                }
+            })(i));
+        }
+        return arr;
     }
-    return arr;
-}
 
-var results = count();
-var f1 = results[0];
-var f2 = results[1];
-var f3 = results[2];
+    var results = count();
+    var f1 = results[0];
+    var f2 = results[1];
+    var f3 = results[2];
 
-f1(); // 1
-f2(); // 4
-f3(); // 9
+    f1(); // 1
+    f2(); // 4
+    f3(); // 9
+```
+
+## 8. 类数组对象(array-like objects)的迭代问题
+
+引用 [MDN](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Indexed_collections)
+>一些 JavaScript 对象, 例如 document.getElementsByTagName() 返回的 NodeList 或者函数内部可用的 arguments 对象，他们表面上看起来，外观和行为像数组，但是不共享他们所有的方法。例如 arguments 对象就提供一个 length 属性，但是不实现 forEach() 方法。
+
+Array的原生(prototype)方法可以用来处理类似数组行为的对象，例如：
+```javascript
+    Array.prototype.forEach.call(arguments, function(item) {
+        console.log(item);
+    });
+  ```
+## 9. Array和Set的对比
+一般情况下，在JavaScript中使用数组来存储一组元素，而新的集合对象有这些优势：
+
++ 数组中用于判断元素是否存在的indexOf 函数效率低下。
++ Set对象允许根据值删除元素，而数组中必须使用基于下标的 splice 方法。
++ 数组的indexOf方法无法找到NaN值。
++ Set对象存储不重复的值，所以不需要手动处理包含重复值的情况。
+
+# 10. Object和Map的比较
+一般地，objects会被用于将字符串类型映射到数值。Object允许设置键值对、根据键获取值、删除键、检测某个键是否存在。而Map具有更多的优势。
+
++ Object的键均为Strings类型，在Map里键可以是任意类型。
++ 必须手动计算Object的尺寸，但是可以很容易地获取使用Map的尺寸。
++ Map的遍历遵循元素的插入顺序。
++ Object有原型，所以映射中有一些缺省的键。（可以用 map = Object.create(null) 回避）。
+
+**这三条提示可以帮你决定用Map还是Object：**
+
++ 如果键在运行时才能知道，或者所有的键类型相同，所有的值类型相同，那就使用Map。
++ 如果需要将原始值存储为键，则使用Map，因为Object将每个键视为字符串，不管它是一个数字值、布尔值还是任何其他原始值。
++ 如果需要对个别元素进行操作，使用Object。
+
+## 11. Object.prototype.toString.call 判断数据类型
+```javascript
+    console.log(Object.prototype.toString.call({})) //[object Object]
+    console.log(Object.prototype.toString.call(123)) //[object Number]
+    console.log(Object.prototype.toString.call('123')) //[object String]
+    console.log(Object.prototype.toString.call(undefined)) //[object Undefined]
+    console.log(Object.prototype.toString.call(true)) //[object Boolean]
+    console.log(Object.prototype.toString.call([])) //[object Array]
+    console.log(Object.prototype.toString.call(function(){})) //[object Function]
+    console.log(Object.prototype.toString.call(null))  //[object Null
 ```
