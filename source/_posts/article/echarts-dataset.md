@@ -2,7 +2,7 @@
 title: Echarts3.0 中利用 dataset 进行数据管理
 date: 2020-06-02 18:57:28
 summary: Echarts3.0 中利用 dataset 进行数据管理,并封装图表生成方法
-categories: 文章
+categories: 原创
 tags: 
 - Echarts
 - JavaScript
