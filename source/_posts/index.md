@@ -3,7 +3,6 @@ title: D3.event 在经过Babel转译之后出现的问题
 date: 2020-06-02 14:07:28
 img:
 top: true
-cover: true
 keywords: d3.event
 categories: 笔记
 tags: 
