@@ -1,13 +1,13 @@
 ---
-title: javascript 笔记
+title: JavaScript 笔记
 date: 2020-06-02 16:37:36
-summary: javascript 笔记
+summary: JavaScript 笔记
 categories: 笔记
 tags: JavaScript
 top: 
 cover: 
 img:
-keywords: javascript
+keywords: JavaScript
 ---
 
 ## 1. 触发事件Dom元素获取
@@ -38,10 +38,10 @@ keywords: javascript
 ```
 ## 3. Object.assign() 实现浅拷贝
 ``` javascript
-	Object.assign(target, resouce) // 将源对象的属性拷贝到目标对象。但是无法对源对象的引用指针进行深拷贝。
+	Object.assign(target, resource) // 将源对象的属性拷贝到目标对象。但是无法对源对象的引用指针进行深拷贝。
 ```
 ## 4. let在循环体内的表现
-	let声明的变量, 在循环体内每循环一次, 就会创建一个新的作用域,所以可以实现:
+	let声明的变量, 在循环体内每循环一次, 就会创建一个新的作用域,所以可以依次获取 i:
 ``` javascript
     for (let i = 0; i < 10 ; i++) {
     	setTimeout(function() {console.log(i); }, 100 * i);
@@ -78,8 +78,9 @@ keywords: javascript
 * break: 是立即结束语句，并跳出语句，结束for循环。
 * continue: 不是退出一个循环，而是开始循环的一次新迭代。
 * return: 停止函数。
+  forEach等循环语句无法用以上三种中止退出, 但是可以报错中止遍历。
 
-## 7. 闭包注意点
+## 7. 闭包
 ``` javascript
     function count() {
         var arr = [];
@@ -168,12 +169,12 @@ Array的原生(prototype)方法可以用来处理类似数组行为的对象，�
 
 ## 11. Object.prototype.toString.call 判断数据类型
 ```javascript
-    console.log(Object.prototype.toString.call({})) //[object Object]
-    console.log(Object.prototype.toString.call(123)) //[object Number]
-    console.log(Object.prototype.toString.call('123')) //[object String]
-    console.log(Object.prototype.toString.call(undefined)) //[object Undefined]
-    console.log(Object.prototype.toString.call(true)) //[object Boolean]
-    console.log(Object.prototype.toString.call([])) //[object Array]
-    console.log(Object.prototype.toString.call(function(){})) //[object Function]
-    console.log(Object.prototype.toString.call(null))  //[object Null
+    console.log(Object.prototype.toString.call({})) // [object Object]
+    console.log(Object.prototype.toString.call(123)) // [object Number]
+    console.log(Object.prototype.toString.call('123')) // [object String]
+    console.log(Object.prototype.toString.call(undefined)) // [object Undefined]
+    console.log(Object.prototype.toString.call(true)) // [object Boolean]
+    console.log(Object.prototype.toString.call([])) // [object Array]
+    console.log(Object.prototype.toString.call(function(){})) // [object Function]
+    console.log(Object.prototype.toString.call(null))  // [object Null]
 ```
