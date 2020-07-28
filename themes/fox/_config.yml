@@ -143,7 +143,7 @@ indexbtn:
 # 首页 banner 中的第二行个人信息配置，留空即不启用
 socialLink:
   github:  https://github.com/Assan233
-  email: 719685838a@Gmail.com
+  email: 719685838@qq.com
   facebook: # https://www.facebook.com/xxx
   twitter: # https://twitter.com/xxx
   qq: 719685838
@@ -199,7 +199,7 @@ mathjax:
 # 文章信息--若要开启文章字数统计，需要安装 hexo-wordcount 插件，安装命令: `npm i --save hexo-wordcount`
 postInfo:
   date: true # 发布日期
-  update: true # 更新日期
+  update: false # 更新日期
   wordCount: false # 文章字数统计
   totalCount: true # 站点总文章字数
   min2read: true # 文章阅读时长
