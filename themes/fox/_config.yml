@@ -53,9 +53,9 @@ menu:
 # 站点运行开始时间.
 time:
   enable: true
-  year: 2020 # 年份
-  month: 06 # 月份
-  date: 01 # 日期
+  year: 2019 # 年份
+  month: 02 # 月份
+  date: 12 # 日期
   hour: 00 # 小时
   minute: 00 # 分钟
   second: 00 # 秒
