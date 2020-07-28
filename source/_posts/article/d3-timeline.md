@@ -14,8 +14,8 @@ keywords:
 ![d3-timeline.png](http://qbnq7wfi1.bkt.clouddn.com/d3-timeline.png)
 基于d3-v5, 依赖dagre-d3, 代码:
 
-## Vue版:
-```javascript
+## Vue:
+``` javascript
 <template>
   <div :id="rootEleId" class="topology-timeline">
     <!-- 拓扑图tooltip -->
@@ -30,14 +30,28 @@ keywords:
     </transition>
   </div>
 </template>
-
 <script>
-import * as d3 from "d3";
+// 按模块引入D3
+const d3 = Object.assign(
+  {},
+  require("d3-axis"),
+  require("d3-array"),
+  require("d3-selection"),
+  require("d3-drag"),
+  require("d3-ease"),
+  require("d3-format"),
+  require("d3-scale"),
+  require("d3-time"),
+  require("d3-timer"),
+  require("d3-time-format"),
+  require("d3-transition"),
+  require("d3-zoom")
+);
 import dagreD3 from "dagre-d3";
 import UUID from "uuid";
+
 export default {
   name: "TopologyTimeline",
-  components: {},
   props: {
     // 画布尺寸
     width: {
@@ -132,13 +146,12 @@ export default {
       formatDay: null, // 坐标轴文本格式化 -- 日
       formatMonth: null, // 坐标轴文本格式化 -- 年/月
       currentHoverInfo: null, // 当前hover节点的数据
-      // currentClickInfo: null, // 当前click节点的数据
-
+      tickData: null, // 存储ticks时间
+      yNodeArr: [], // 存储每个节点y坐标轴用于y坐标去重, 防止碰撞
       // 相关dom元素
       rootEle: null, //组件根元素
       svg: null, //svg画布
       view: null, // 拓扑图
-      grid: null, // 网格
       axis: null, // 坐标轴
       separateLine: null, // 坐标轴与拓扑图分隔线
       xAxisDay: null, // 坐标轴 - 日
@@ -173,15 +186,24 @@ export default {
   },
   mounted() {
     this.handleInitGraph();
-    this.handleCreatAxis();
-    this.handleCreatGrid();
-    this.handleCreatTopology();
+    this.handleCreateAxis();
+    this.handleCreateGrid();
+    this.renderCreateTopology(true);
     this.handleZoom();
     this.handleDrag();
     this.onHoverNode();
     this.onClickNode();
   },
   methods: {
+    // 节点y坐标去碰撞
+    checkRepeat(y, i = 1) {
+      if (this.yNodeArr.includes(y)) {
+        y = y + 40 * i;
+        i += 0.5;
+        return this.checkRepeat(y, i);
+      }
+      return y;
+    },
     // 初始化视图
     handleInitGraph() {
       // 节点信息转化为map
@@ -200,7 +222,6 @@ export default {
         .attr("height", this.height);
       // 初始化元素
       const backgroundGrey = this.svg.append("rect").attr("class", "bg-grey");
-      this.grid = this.svg.append("g").attr("class", "grid");
       this.view = this.svg.append("g").attr("class", "view");
       const backgroundWhite = this.svg.append("rect").attr("class", "bg-white");
       this.axis = this.svg.append("g").attr("class", "axis");
@@ -238,25 +259,39 @@ export default {
         .attr("height", this.padding.bottom);
     },
     // 创建坐标轴及确定比例尺
-    handleCreatAxis() {
+    handleCreateAxis() {
       this.max = new Date(d3.max(this.timeArr));
       this.min = new Date(d3.min(this.timeArr));
       let maxY = this.max.getFullYear();
       let maxM = this.max.getMonth();
       let minY = this.min.getFullYear();
       let minM = this.min.getMonth();
-      // console.log(this.max, this.min);
+      let minD = this.min.getDate();
       // 确定比例尺
       this.xScale = d3
         .scaleTime()
-        .domain([new Date(minY, minM, 1), new Date(maxY, ++maxM, 1)])
+        .domain([new Date(minY, minM, minD), new Date(maxY, ++maxM, 1)])
         .range([0, this.width - this.padding.left - this.padding.right]);
 
       // 坐标轴文本格式化
       this.formatDay = d3.axisBottom(this.xScale).tickFormat(d => {
-        const date = new Date(d);
-        const day = date.getDate();
-        return `${day === 1 ? "" : day}`; // 如果是1号, 不显示刻度,直接由xAxisMonth显示年月
+        let rst = null;
+        let date = new Date(d);
+        let day = date.getDate();
+        let hour = date.getHours();
+        let minutes = date.getMinutes();
+        day = day === 1 ? "" : day; // 如果是1号, 不显示刻度,直接由xAxisMonth显示年月
+        rst = day;
+        if (hour !== 0 || minutes !== 0) {
+          let h = hour > 9 ? hour : `0${hour}`;
+          let m = "00";
+          if (minutes !== 0) {
+            m = minutes > 9 ? minutes : `0${minutes}`;
+          }
+          const time = `${h} : ${m}`;
+          rst = time;
+        } // 如果时间是非0点, 则显示小时
+        return rst;
       });
       this.formatMonth = d3
         .axisBottom(this.xScale)
@@ -283,27 +318,10 @@ export default {
         .call(this.formatMonth);
     },
     // 创建X轴网格
-    handleCreatGrid() {
-      const monthNum = d3.timeMonth.count(this.min, this.max); // 区间月份数量
-      const lineGroup = this.grid
-        .attr("transform", `translate(${this.padding.left},0)`)
-        .selectAll("g")
-        .data(this.xScale.ticks(monthNum))
-        .enter()
-        .append("g");
-      lineGroup
-        .append("line")
-        .attr("x1", d => {
-          return this.xScale(new Date(d));
-        })
-        .attr("x2", d => {
-          return this.xScale(new Date(d));
-        })
-        .attr("y1", this.padding.top)
-        .attr("y2", this.height - this.padding.bottom)
-        .attr("class", "grid-line")
-        .style("stroke", "#DCDCDC")
-        .style("stroke-dasharray", 6);
+    handleCreateGrid() {
+      // 刻度内添加grid
+      this.renderGridLine("g.axis-day", 1);
+      this.renderGridLine("g.axis-month", 1.8);
 
       // 添加坐标轴与拓扑图分隔线
       this.separateLine
@@ -314,8 +332,26 @@ export default {
         .attr("y1", this.height - this.padding.bottom)
         .attr("y2", this.height - this.padding.bottom);
     },
+    // 渲染网格线条
+    renderGridLine(selection, strokeWidth) {
+      let lines = this.axis
+        .select(selection)
+        .selectAll("g.tick")
+        .select("polyline.grid-line")
+        .remove();
+      lines = this.axis
+        .select(selection)
+        .selectAll("g.tick")
+        .append("polyline")
+        .classed("grid-line", true);
+      lines
+        .attr("points", `0,0 0,${-this.height}`)
+        .style("stroke-width", strokeWidth)
+        .style("stroke", "rgba(190, 190, 190, 0.5)")
+        .style("stroke-dasharray", 8);
+    },
     // 绘制拓扑图 节点--箭头
-    handleCreatTopology() {
+    renderCreateTopology(isInit = false) {
       let g = new dagreD3.graphlib.Graph().setDefaultEdgeLabel(function() {
         return {};
       });
@@ -360,14 +396,20 @@ export default {
         .selectAll("circle")
         .attr("r", this.size);
 
-      // 重新定位节点x坐标
+      // 重新定位节点x坐标及y坐标防碰撞
       const nodesArr = this.view.select(".nodes").selectAll(".node")._groups[0];
       nodesArr.forEach(item => {
         let dom = d3.select(item)._groups[0][0];
         let nodeId = dom.id;
         let date = this.nodeMap.get(nodeId).time;
         const x = this.xScale(new Date(date));
-        const y = dom.transform.animVal[0].matrix.f;
+        let y = dom.transform.animVal[0].matrix.f;
+
+        //首次加载 ,节点y坐标去碰撞
+        if (isInit) {
+          y = this.checkRepeat(y);
+          this.yNodeArr.push(y);
+        }
         d3.select(item).attr("transform", `translate(${x},${y})`);
         this.nodeDomMap.set(item.id, item);
       });
@@ -403,7 +445,7 @@ export default {
       // 设置zoom参数
       let zoom = d3
         .zoom()
-        .scaleExtent([1, 10])
+        .scaleExtent([1, 1000])
         .translateExtent([
           [0, 0],
           [this.width * 1.5, this.height]
@@ -417,10 +459,11 @@ export default {
 
       // 每次缩放重定位渲染拓扑图
       function reRender() {
-        const t = d3.event.transform.rescaleX(this.xScale); //获得缩放后的比例尺
+        const { event } = require("d3-selection"); // d3.event经过babel转译会被清空, 需要在事件处理函数里动态绑定
+        const t = event.transform.rescaleX(this.xScale); //获得缩放后的比例尺
         this.xAxisDay.call(this.formatDay.scale(t)); //重新设置x坐标轴的scale
         this.xAxisMonth.call(this.formatMonth.scale(t)); //重新设置x坐标轴的scale
-        // let { x, y, k } = d3.event.transform;
+        // let { x, y, k } =event.transform;
         // 重新绘制节点
         const nodesArr = this.view.select(".nodes").selectAll(".node")
           ._groups[0];
@@ -433,7 +476,6 @@ export default {
           d3.select(item).attr("transform", `translate(${x1},${y1})`);
           this.nodeDomMap.set(item.id, item);
         });
-
         // 重新绘制箭头
         this.arrowInfo &&
           this.arrowInfo.map(item => {
@@ -454,14 +496,7 @@ export default {
           });
 
         //重新绘制x网格
-        this.grid
-          .selectAll(".grid-line")
-          .attr("x1", d => {
-            return t(new Date(d));
-          })
-          .attr("x2", d => {
-            return t(new Date(d));
-          });
+        this.handleCreateGrid();
       }
     },
     // 拖拽控制
@@ -475,7 +510,8 @@ export default {
           .on("end", dragended)
       );
       function dragstarted() {
-        self.y0 = d3.event.y;
+        const { event } = require("d3-selection"); // d3.event经过babel转译会被清空, 需要在事件处理函数里动态绑定
+        self.y0 = event.y;
         const translateY = self.view.select(".output")._groups[0][0].transform
           .animVal[0];
         // 获取 view->output当前偏移值
@@ -487,12 +523,10 @@ export default {
       }
 
       function dragged() {
+        const { event } = require("d3-selection"); // d3.event经过babel转译会被清空, 需要在事件处理函数里动态绑定
         self.view
           .select(".output")
-          .attr(
-            "transform",
-            `translate(0, ${d3.event.y - self.y0 + self.viewY})`
-          );
+          .attr("transform", `translate(0, ${event.y - self.y0 + self.viewY})`);
       }
 
       function dragended() {
@@ -559,6 +593,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
+// tooltips
 .tooltip {
   width: 180px;
   height: 64px;
@@ -607,7 +642,6 @@ export default {
       shape-rendering: crispEdges;
     }
     text {
-      font-family: sans-serif;
       font-size: 12px;
       fill: #999999;
     }
@@ -963,11 +997,6 @@ export default {
       .attr("x1", d => { return t(new Date(d)) })
       .attr("x2", d => { return t(new Date(d)) })
   }
-
-
-
 </script>
-
-</html>
 ```
 
