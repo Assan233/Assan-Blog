@@ -78,7 +78,7 @@ keywords: JavaScript
 * break: 是立即结束语句，并跳出语句，结束for循环。
 * continue: 不是退出一个循环，而是开始循环的一次新迭代。
 * return: 停止函数。
-  forEach等循环语句无法用以上三种中止退出, 但是可以报错中止遍历。
+  *forEach等循环语句无法用以上三种中止退出, 但是可以报错中止遍历。*
 
 ## 7. 闭包
 ``` javascript
@@ -86,7 +86,7 @@ keywords: JavaScript
         var arr = [];
         for (var i=1; i<=3; i++) {
             arr.push(function () {
-                return I * I;
+                return i * i;
             });
         }
         return arr;
