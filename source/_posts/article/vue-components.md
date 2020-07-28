@@ -1,6 +1,6 @@
 ---
 title: 封装Vue组件的原则及技巧
-date: 2020-06-30 22:39:42
+date: 2020-04-30 22:39:42
 summary: 封装组件，除了对于API的熟练度之外，更多地是考察JavaScript基础。Vue入门十分轻松，但是要写好优雅的Vue代码，也是一份不小的学问。
 categories: 转载
 tags: 

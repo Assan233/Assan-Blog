@@ -1,6 +1,6 @@
 ---
 title: CSS3新特性之animation
-date: 2020-06-02 18:02:48
+date: 2019-09-27 18:02:48
 summary: CSS3新特性之animation (纯CSS实现轮播图)
 categories: 原创
 tags: 

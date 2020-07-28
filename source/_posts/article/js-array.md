@@ -2,7 +2,7 @@
 title: JavaScript数组使用技巧
 date: 2020-06-22 09:38:01
 summary: JavaScript数组使用技巧
-categories: 原创
+categories: 转载
 tags: JavaScript
 top: true
 cover:
@@ -40,7 +40,7 @@ const obj = { a: 1 }
 const objClone = { ...obj }
 ```
 
-浅拷贝方法有很多如`arr.slice(0, arr.length)/Arror.from(arr)`等，但是用了`...`操作符之后就不会再想用其他的了~
+浅拷贝方法有很多如`arr.slice(0, arr.length)/Arror.from(arr)`等，但`...`操作符之后就不会再想用其他的了~
 
 ## 3.数组合并
 
