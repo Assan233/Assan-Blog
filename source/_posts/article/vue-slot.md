@@ -1,6 +1,6 @@
 ---
 title: Vue 2.60 中, 插槽新增的v-slot
-date: 2020-06-30 22:32:36
+date: 2019-10-30 22:32:36
 summary: 官方文档摘要
 categories: 原创
 tags: 
