@@ -178,3 +178,9 @@ Array的原生(prototype)方法可以用来处理类似数组行为的对象，�
     console.log(Object.prototype.toString.call(function(){})) // [object Function]
     console.log(Object.prototype.toString.call(null))  // [object Null]
 ```
+
+## 12. 动态加载静态资源
+由于webpack获取资源依赖的时候, 无法获取动态路径, 所以需要使用 require() 手动请求资源
+``` html
+ <img :src="require(`./img/${currentEditUnit.url}`)" />
+```
